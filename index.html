@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agorà - Guestbook</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Georgia', serif; background-color: #faf8f5; color: #333333; line-height: 1.8; padding: 40px 20px; }
+        .container { max-width: 680px; margin: 0 auto; }
+        
+        header { display: flex; align-items: center; gap: 25px; margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid #ebdccb; }
+        .header-logo img { width: 90px; height: auto; }
+        header h1 { font-size: 2.6rem; font-weight: normal; color: #1a1a1a; margin-bottom: 8px; }
+        header p { font-style: italic; color: #8c8275; font-size: 1.1rem; }
+        
+        .social-links { display: flex; justify-content: center; gap: 25px; margin-bottom: 35px; }
+        .social-links a { color: #9c8c7c; font-size: 1.5rem; transition: color 0.2s; }
+        .social-links a:hover { color: #1a1a1a; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: #ffffff; border: 1px solid #ebdccb; border-radius: 4px; padding: 15px 10px; text-align: center; }
+        .stat-icon { font-size: 1.2rem; margin-bottom: 5px; display: block; }
+        .stat-number { font-size: 1.4rem; color: #1a1a1a; display: block; }
+        .stat-label { font-size: 0.75rem; text-transform: uppercase; color: #a3988c; }
+        
+        .marquee-banner { border-top: 1px dashed #ebdccb; border-bottom: 1px dashed #ebdccb; padding: 10px 0; margin-bottom: 45px; overflow: hidden; white-space: nowrap; }
+        .marquee-content { display: inline-block; font-style: italic; color: #8c8275; animation: marquee 25s linear infinite; padding-left: 100%; }
+        @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+        
+        .gb-form-box { background: #ffffff; padding: 30px; border-radius: 4px; border: 1px solid #ebdccb; margin-bottom: 60px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #1a1a1a; font-weight: bold; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ebdccb; background: #ffffff; border-radius: 4px; font-family: 'Georgia', serif; }
+        .btn-submit { background: #ff4d4d; color: white; border: none; padding: 12px 25px; cursor: pointer; border-radius: 4px; font-weight: bold; width: 100%; }
+        
+        .messages-list { display: flex; flex-direction: column; gap: 35px; }
+        .msg-card { background: #ffffff; padding: 35px; border-radius: 4px; border: 1px solid #f0eae1; }
+        .msg-meta { font-size: 0.85rem; color: #a3988c; margin-bottom: 15px; border-bottom: 1px dashed #f0eae1; padding-bottom: 8px; display: flex; justify-content: space-between; }
+        .comment-reactions { display: flex; gap: 15px; border-top: 1px dashed #f0eae1; padding-top: 12px; }
+        .btn-thumb { background: none; border: none; cursor: pointer; color: #8c8275; display: flex; align-items: center; gap: 6px; }
+        footer { text-align: center; margin-top: 80px; font-size: 0.85rem; color: #a3988c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-logo"><img src="Logo LDI.png" alt="Logo LDI"></div>
+            <div class="header-text">
+                <h1>Agorà</h1>
+                <p>Uno spazio condiviso per parole, pensieri e riflessioni.</p>
+            </div>
+        </header>
+
+        <div class="social-links">
+            <a href="https://www.instagram.com/le_disabilita_invisibili/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/groups/515143972456105" target="_blank"><i class="fab fa-facebook"></i></a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box"><span class="stat-icon">💬</span><span class="stat-number" id="count-messages">2</span><span class="stat-label">Messaggi</span></div>
+            <div class="stat-box"><span class="stat-icon">🔥</span><span class="stat-number" id="count-reactions">376</span><span class="stat-label">Reaction</span></div>
+            <div class="stat-box"><span class="stat-icon">👁️</span><span class="stat-number" id="count-views">60</span><span class="stat-label">Visite</span></div>
+        </div>
+
+        <div class="marquee-banner">
+            <div class="marquee-content">AGORA' DI "LE DISABILITA' INVISIBILI"! 🤍 LASCIA UN PENSIERO E CONDIVIDILO CON LA COMUNITÀ...</div>
+        </div>
+
+        <div class="gb-form-box">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <button style="background: transparent; border: 1px dashed #9c8c7c; padding: 10px 20px; color: #9c8c7c; cursor: pointer; border-radius: 4px;">
+                    🔑 Accedi / Riserva Il Tuo Nome ✅
+                </button>
+            </div>
+            <form id="manual-form">
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" id="userName" placeholder="Inserisci il tuo nome...">
+                </div>
+                <div class="form-group">
+                    <label>Message:</label>
+                    <textarea id="userMessage" rows="4" maxlength="500" placeholder="Scrivi un messaggio... usa @ per taggare qualcuno!"></textarea>
+                    <p style="font-size: 0.8rem; color: #a3988c; text-align: right; margin-top: 5px;" id="charCount">500 characters remaining</p>
+                </div>
+                <button type="button" class="btn-submit" onclick="alert('Grazie! Riceverò il tuo messaggio e lo aggiungerò manualmente al sito.')">Submit</button>
+            </form>
+        </div>
+
+        <div class="messages-list">
+            <div class="msg-card" id="msg-1">
+                <div class="msg-meta"><span>Un lettore</span><span>26 Giugno 2026</span></div>
+                <p>Un'iniziativa splendida. C'è un grande bisogno di spazi silenziosi ed eleganti.</p>
+                <div class="comment-reactions">
+                    <button class="btn-thumb" onclick="vote('msg-1', 'up')">👍 <span class="up-count">12</span></button>
+                    <button class="btn-thumb" onclick="vote('msg-1', 'down')">👎 <span class="down-count">0</span></button>
+                </div>
+            </div>
+        </div>
+        <footer><p>&copy; 2026 Agorà.</p></footer>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('userMessage');
+        const charCount = document.getElementById('charCount');
+        textarea.addEventListener('input', () => {
+            const remaining = 500 - textarea.value.length;
+            charCount.innerText = `${remaining} characters remaining`;
+        });
+
+        function vote(msgId, type) {
+            let key = `${msgId}_${type}`;
+            let count = parseInt(localStorage.getItem(key)) || (type === 'up' ? 12 : 0);
+            count++;
+            localStorage.setItem(key, count);
+            document.querySelector(`#${msgId} .${type}-count`).innerText = count;
+        }
+
+        let views = parseInt(localStorage.getItem('agoraViews')) || 60;
+        views++;
+        localStorage.setItem('agoraViews', views);
+        document.getElementById('count-views').innerText = views;
+    </script>
+</body>
+</html>
